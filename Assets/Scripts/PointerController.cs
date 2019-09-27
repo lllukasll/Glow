@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 public class PointerController : MonoBehaviour
 {
-    public GameManager GameManager;
     public GameObject platform;
 
     public AudioSource pointAudio;
@@ -29,8 +28,8 @@ public class PointerController : MonoBehaviour
             var emissionColor = other.gameObject.GetComponent<Renderer>().material.GetColor("_EmissionColor");
             pointAudio.Play();
             platform.GetComponent<PlatformMovement>().SetNewColor(color, emissionColor);
-            GameManager.InstantiateSphere(transform.position);
-            GameManager.AddPoint();
+            GameManager.instance.InstantiateSphere(transform.position);
+            ScoreManager.instance.AddPoint();
             //Debug.Log("Points : " + pointCounter);
             Debug.Log("Color : " + color);
             Debug.Log("Emission color : " + emissionColor);

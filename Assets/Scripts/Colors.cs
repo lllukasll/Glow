@@ -24,8 +24,25 @@ public static class Colors
         new SphereColorsModel(new Color(1, 0.9103774f, 0.9245797f, 1), new Color(0.3396226f, 0.2494503f, 0.241901f, 1)),
         new SphereColorsModel(new Color(1, 0.8745098f, 0, 1), new Color(0.6588235f, 0.509804f, 0.1882353f)),
         new SphereColorsModel(new Color(1, 0.3019608f, 0, 0.00392156f), new Color(0.9137255f, 0.07058824f, 0)),
-        new SphereColorsModel(new Color(1, 0.9098039f, 0.9254902f, 0.003921569f), new Color(0.3411765f, 0.2509804f, 0.2431373f))
+        new SphereColorsModel(new Color(1, 0.9098039f, 0.9254902f, 0.003921569f), new Color(0.3411765f, 0.2509804f, 0.2431373f)),
+        new SphereColorsModel(new Color(0.2509804f, 0.2509804f, 0.4784314f), new Color(0.2509804f, 0.2509804f, 0.4784314f))
     };
 
-    
+    // rgb(64, 64, 122)
+    // rgb(44, 44, 84)
+    // rgb(255, 82, 82)
+    // rgb(179, 57, 57)
+    // rgb(112, 111, 211)
+    // rgb(71, 71, 135)
+    // rgb(255, 121, 63)
+    // rgb(205, 97, 51)
+    // rgb(247, 241, 227)
+    // rgb(52, 172, 224)
+    // rgb(34, 112, 147)
+    // rgb(255, 177, 66) 
+    // rgb(204, 142, 53)
+    // rgb(51, 217, 178)
+    // rgb(33, 140, 116)
+    // rgb(255, 218, 121)
+    // rgb(204, 174, 98)
 }

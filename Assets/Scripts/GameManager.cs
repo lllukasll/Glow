@@ -7,36 +7,38 @@ public enum GameState { GAME, GAME_OVER }
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager instance;
+
     public AudioSource backgroundAudio;
     public GameObject gameOverUI;
     public GameObject activeGameUI;
-
-    public Text countText;
-    public Text scoreCountText;
-    public Text currentScoreMessage;
-    public Text gameOverScoreMessage;
-    public Text currentBestScoreText;
-    public Text bestScoreText;
 
     public GameObject sphere;
     public GameObject platform;
     public float offsetY;
 
-    public int pointCounter;
-    public int bestScore;
-
     public bool gameActive;
+    private bool canContinue;
     private GameState _activeGameState;
     private Vector3 cubesPivot;
     private List<GameObject> SpawnedBalls;
 
+    private void Awake()
+    {
+        if (instance != null)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        bestScore = PlayerPrefs.GetInt("highscore", bestScore);
-        currentBestScoreText.text = bestScore.ToString();
-        bestScoreText.text = bestScore.ToString();
-
         SpawnedBalls = new List<GameObject>();
         ResetValues();
     }
@@ -48,7 +50,7 @@ public class GameManager : MonoBehaviour
         {
             if(!gameActive && (Input.GetKeyDown(KeyCode.Space) || (Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Began)))
             {
-                StartCoroutine(SetGameActive(0.5f));
+                StartCoroutine(SetGameActive(0.1f));
             }
         }
     }
@@ -56,8 +58,7 @@ public class GameManager : MonoBehaviour
     private IEnumerator SetGameActive(float seconds)
     {
         yield return new WaitForSeconds(seconds);
-        gameOverScoreMessage.text = "THAT'S JUST BAD";
-        currentScoreMessage.text = "STARTED";
+        ScoreManager.instance.SetScoreMessageToActive();
         gameActive = true;
         backgroundAudio.Play();
     }
@@ -74,21 +75,6 @@ public class GameManager : MonoBehaviour
         var createdSphere = Instantiate(sphere, new Vector3(Random.Range(-2.2f, 2.2f), platform.transform.position.y + offsetY, platform.transform.position.z), sphere.transform.rotation);
     }
 
-    public void AddPoint()
-    {
-        pointCounter++;
-            
-        if(pointCounter > bestScore)
-        {
-            bestScore = pointCounter;
-            currentBestScoreText.text = bestScore.ToString();
-            bestScoreText.text = bestScore.ToString();
-            PlayerPrefs.SetInt("highscore", bestScore);
-        }
-
-        UpdateScore();
-    }
-
     public void GameOver()
     {
         backgroundAudio.Stop();
@@ -103,6 +89,35 @@ public class GameManager : MonoBehaviour
         Vector3 startPosition = platform.GetComponent<PlatformMovement>().ResetPosition();
         Instantiate(sphere, new Vector3(startPosition.x, startPosition.y + offsetY, startPosition.z), sphere.transform.rotation);
         platform.GetComponent<PlatformMovement>().UnPause();
+    }
+
+    public void Quit()
+    {
+        Application.Quit();
+    }
+
+    public void Continue()
+    {
+        gameActive = false;
+        _activeGameState = GameState.GAME;
+
+        gameOverUI.SetActive(false);
+        activeGameUI.SetActive(true);
+        canContinue = false;
+
+        foreach (var el in SpawnedBalls)
+        {
+            Destroy(el);
+        }
+
+        Vector3 startPosition = platform.transform.position;
+        Instantiate(sphere, new Vector3(startPosition.x, startPosition.y + offsetY, startPosition.z), sphere.transform.rotation);
+        platform.GetComponent<PlatformMovement>().UnPause();
+    }
+
+    public bool GetContinueValue()
+    {
+        return canContinue;
     }
 
     public void SpawnBalls(Vector3 postion, float cubesInRow, float explosionRadius, float explosionForce, float explosionUpward, float cubeSize, Material material)
@@ -165,11 +180,9 @@ public class GameManager : MonoBehaviour
     {
         gameActive = false;
         _activeGameState = GameState.GAME;
-        pointCounter = 0;
+        canContinue = true;
 
-        countText.text = "";
-        scoreCountText.text = "0";
-        currentScoreMessage.text = "TOUCH TO START";
+        ScoreManager.instance.ResetCurrentScore();
 
         gameOverUI.SetActive(false);
         activeGameUI.SetActive(true);
@@ -178,29 +191,5 @@ public class GameManager : MonoBehaviour
         {
             Destroy(el);
         }        
-    }
-
-    private void UpdateScore()
-    {
-        countText.text = pointCounter.ToString();
-        scoreCountText.text = pointCounter.ToString();
-
-        if (pointCounter == 1) { StartCoroutine(SetScoreMessage("EHM... THAT'S OK")); }
-        if (pointCounter == 5) { StartCoroutine(SetScoreMessage("YOU'RE DOING FINE"));}
-        if (pointCounter == 10) { StartCoroutine(SetScoreMessage("THAT'S PRETTY GOOD"));}
-        if (pointCounter == 15) { StartCoroutine(SetScoreMessage("YOU'RE GREATE"));}
-        if (pointCounter == 20) { StartCoroutine(SetScoreMessage("AWESOME SCORE"));}
-        if (pointCounter == 25) { StartCoroutine(SetScoreMessage("THIS IS AMAZING"));}
-        if (pointCounter == 30) { StartCoroutine(SetScoreMessage("PERFECT"));}
-        if (pointCounter == 45) { StartCoroutine(SetScoreMessage("IMPOSIBLE !"));}
-        if (pointCounter == 50) { StartCoroutine(SetScoreMessage("THAT'S EPIC !!!"));}
-    }
-
-    private IEnumerator SetScoreMessage(string message)
-    {
-        gameOverScoreMessage.text = message;
-        currentScoreMessage.text = message;
-        yield return new WaitForSeconds(1);
-        currentScoreMessage.text = "";
     }
 }

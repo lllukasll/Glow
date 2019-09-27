@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class PlatformMovement : MonoBehaviour
 {
-    public GameManager GameManager;
     //public GameObject diePanel;
     public GameObject Light;
     public float sideSpeed;
@@ -38,7 +37,7 @@ public class PlatformMovement : MonoBehaviour
     void FixedUpdate()
     {
         ColorChange();
-        if(!paused && GameManager.gameActive)
+        if(!paused && GameManager.instance.gameActive)
         {
             Vector3 movement = new Vector3(sideSpeed * Time.deltaTime * startMoveDirection, topSpeed * Time.deltaTime, 0.0f);
             rb.transform.position += movement;
@@ -58,7 +57,7 @@ public class PlatformMovement : MonoBehaviour
 
         if (collision.gameObject.CompareTag("Sphere"))
         {
-            GameManager.GameOver();
+            GameManager.instance.GameOver();
             paused = true;
         }
     }

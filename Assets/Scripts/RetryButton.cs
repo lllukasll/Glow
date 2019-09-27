@@ -4,12 +4,8 @@ using UnityEngine;
 
 public class RetryButton : MonoBehaviour
 {
-
-    public GameManager GameManager;
-    
     public void RetryClicked()
     {
-        GameManager.Retry();
+        GameManager.instance.Retry();
     }
-    
 }

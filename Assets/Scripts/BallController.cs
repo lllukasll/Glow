@@ -21,13 +21,13 @@ public class BallController : MonoBehaviour
     private Rigidbody rb;
     public bool move;
     private int startMoveDirection;
-    private GameManager GameManager;
+    //private GameManager GameManager;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        GameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        //GameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         move = false;
         startMoveDirection = -1;
         rb = this.GetComponent<Rigidbody>();
@@ -44,7 +44,7 @@ public class BallController : MonoBehaviour
 
     private void Update()
     {
-        if (GameManager.gameActive && (Input.GetKeyDown(KeyCode.Space) || (Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Began)))
+        if (GameManager.instance.gameActive && (Input.GetKeyDown(KeyCode.Space) || (Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Began)))
         {
             move = true;
         }
@@ -55,7 +55,7 @@ public class BallController : MonoBehaviour
         
         if (move)
         {
-            if (GameManager.gameActive)
+            if (GameManager.instance.gameActive)
             {
                 Vector3 movement = new Vector3(0.0f, -1 * fallSpeed * Time.deltaTime, 0.0f);
                 rb.MovePosition(rb.transform.position + movement);
@@ -63,7 +63,7 @@ public class BallController : MonoBehaviour
         }
         else
         {
-            if(GameManager.gameActive)
+            if(GameManager.instance.gameActive)
             {
                 Vector3 movement = new Vector3(startMoveDirection * sideSpeed * Time.deltaTime, 0.0f, 0.0f);
                 rb.MovePosition(rb.transform.position + movement);
@@ -93,7 +93,7 @@ public class BallController : MonoBehaviour
         if(other.CompareTag("End"))
         {
             Destroy(gameObject);
-            GameManager.InstantiateSphereOverPlatform();
+            GameManager.instance.InstantiateSphereOverPlatform();
         }
     }
 
@@ -103,7 +103,7 @@ public class BallController : MonoBehaviour
         gameObject.GetComponent<MeshRenderer>().enabled = false;
         gameObject.GetComponent<SphereCollider>().enabled = false;
 
-        GameManager.SpawnBalls(transform.position, cubesInRow, explosionRadius, explosionForce, explosionUpward, cubeSize, gameObject.GetComponent<Renderer>().material);
+        GameManager.instance.SpawnBalls(transform.position, cubesInRow, explosionRadius, explosionForce, explosionUpward, cubeSize, gameObject.GetComponent<Renderer>().material);
 
         Destroy(gameObject, 5f);
 
